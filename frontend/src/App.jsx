@@ -1,21 +1,26 @@
-import { useRef } from "react";
-import FileList from "./components/FileList";
-import UploadForm from "./components/UploadForm";
-import './App.css'; // 간단한 스타일링을 위해 추가
+import { useRef } from 'react';
+// 파일 이름과 컴포넌트 이름에 맞게 import 수정
+import UploadForm from './components/UploadForm.jsx'; 
+import FileList from './components/FileList.jsx';   
+import './App.css'; 
 
 function App() {
-    const listRef = useRef(null);
+    const fileListRef = useRef();
 
-    // FileList의 load 함수를 호출하는 함수
-    const reload = () => listRef.current?.load?.();
+    // UploadForm의 onDone prop에 연결될 함수
+    const handleUploadDone = () => {
+        if (fileListRef.current) {
+            fileListRef.current.load();
+        }
+    };
 
     return (
-        <div className="container">
-            <h1>S3 파일 업로드 및 목록 보기</h1>
+        <div className="App">
+            <h1>S3 파일 업로드</h1>
+            {/* 사용하는 컴포넌트와 prop을 UploadForm에 맞게 수정 */}
+            <UploadForm onDone={handleUploadDone} />
             <hr />
-            <UploadForm onDone={reload} />
-            <hr />
-            <FileList ref={listRef} />
+            <FileList ref={fileListRef} />
         </div>
     );
 }

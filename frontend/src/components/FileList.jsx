@@ -1,79 +1,47 @@
-import { useEffect, useState, forwardRef, useImperativeHandle } from "react";
-import api from "../api";
-import "./FileList.scss";
+import React, { forwardRef, useEffect, useImperativeHandle, useState } from 'react'
+import api from '../api'
+import './FileList.scss'
 
 const FileList = forwardRef((props, ref) => {
-    const [items, setItems] = useState([]);
-    const [loading, setLoading] = useState(false);
-
+    const [item, setItem] = useState([])
     const load = async () => {
-        setLoading(true);
-        try {
-            const { data } = await api.get("/files", {
-                params: { t: Date.now() }
-            });
-            // 서버 응답에 'out' 필드가 없거나 배열이 아닐 경우, 안전하게 빈 배열([])로 처리
-            setItems(Array.isArray(data.out) ? data.out : []);
-        } catch (error) {
-            console.error("파일 목록 로딩 에러:", error);
-            setItems([]); // 에러 발생 시에도 빈 배열로 초기화
-        } finally {
-            setLoading(false);
-        }
-    };
-
+        const { data } = await api.get('/files', { params: { t: Date.now() } })
+        console.log("GET /files 응답:", data.out)
+        setItem(data.out)
+    }
     useEffect(() => {
-        load();
-    }, []);
-
-    useImperativeHandle(ref, () => ({ load }));
-
+        load()
+    }, [])
+    useImperativeHandle(ref, () => ({ load }))
     const del = async (id) => {
-        if (loading) return;
-        if (!window.confirm("정말로 삭제하시겠습니까?")) return;
-
-        setLoading(true);
+        if (!window.confirm('삭제?')) return
         try {
-            await api.delete(`/files/${id}`);
-            setItems(prevItems => prevItems.filter(item => item._id !== id));
-            console.log('파일 삭제 완료', id);
+            await api.delete(`/files/${id}`)
+            await load()
+            console.log('삭제 완료', id)
         } catch (error) {
-            console.error('파일 삭제 에러', error);
-            await load(); 
-        } finally {
-            setLoading(false);
+            console.error('실패', error)
         }
-    };
-
+    }
     return (
-        <ul className="file-list">
-            {loading && <li className="loading-message">로딩 중...</li>}
-            
-            {!loading && items.length === 0 && <li className="empty-message">표시할 파일이 없습니다.</li>}
-            
-            {items.map((it) => (
+        <ul className='file-list'>
+            {item.map((it) => (
                 <li key={it._id}>
-                    <h3>{it.title || "제목 없음"}</h3>
+                    <h3>{it.title || it.originalName}</h3>
                     <div className="img-wrap">
-                        {it.contentType?.startsWith("image/") && (
-                            <img src={it.url} alt={it.title || "이미지"} style={{ maxWidth: 200, display: "block" }} />
+                        {it.contentType?.startsWith('image/') && (
+                            <img src={it.url} alt="" style={{ maxWidth: 200, display: "block" }} />
                         )}
                     </div>
-                    <p>{it.description || "설명 없음"}</p>
+                    <p>{it.description}</p>
                     <div className="btn-wrap">
-                        <a href={it.url} target="_blank" rel="noreferrer" className="open-btn">Open</a>
-                        <button
-                            onClick={() => del(it._id)}
-                            disabled={loading}
-                            className="delete-btn"
-                        >
-                            Delete
-                        </button>
+                        <a href={it.url} target="_blank" rel="noreferrer" className='open-btn'>open</a>
+                        <button onClick={() => del(it._id)} className='delete-btn'>delete</button>
                     </div>
                 </li>
             ))}
         </ul>
-    );
-});
+    )
+})
 
-export default FileList;
+export default FileList
