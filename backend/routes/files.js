@@ -94,25 +94,27 @@ router.get('/:id', async (req, res) => {
 
 router.patch('/:id', async (req, res) => {
     try {
+        const { title, description } = req.body;
 
-        const { title, description } = req.body
+        // Find the document by its ID and update only the specified fields using $set
         const it = await FileItem.findByIdAndUpdate(
             req.params.id,
-            { title, description },
+            { $set: { title, description } }, // 👈 Use the $set operator here
             { new: true }
-        )
+        );
 
-        if (!it) return res.sendStatus(404)
+        if (!it) {
+            return res.sendStatus(404);
+        }
 
-
-
-        res.status(201).json({ message: "S3 메타데이터 수정하기성공", it })
+        // Corrected the success message for clarity
+        res.status(200).json({ message: "S3 메타데이터 수정 성공", it });
 
     } catch (error) {
-        console.error('메타데이터 저장 에러', error)
-        res.status(500).json({ error: "S3 메타데이터 저장 실패" })
+        console.error('메타데이터 저장 에러', error);
+        res.status(500).json({ error: "S3 메타데이터 저장 실패" });
     }
-})
+});
 
 router.delete('/:id', async (req, res) => {
     try {
