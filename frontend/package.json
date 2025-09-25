@@ -1,30 +1,29 @@
 {
-  "name": "ncs-test",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "name": "frontend",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-    
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "eslint .",
+    "preview": "vite preview"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/hym-dot/ncs-test.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs",
-  "bugs": {
-    "url": "https://github.com/hym-dot/ncs-test/issues"
-  },
-  "homepage": "https://github.com/hym-dot/ncs-test#readme",
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.895.0",
-    "dotenv": "^17.2.2",
-    "express": "^5.1.0",
-    "multer": "^2.0.2",
-    "multer-s3": "^3.0.1",
-    "nodemon": "^3.1.10"
+    "axios": "^1.12.2",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.36.0",
+    "@types/react": "^19.1.13",
+    "@types/react-dom": "^19.1.9",
+    "@vitejs/plugin-react": "^5.0.3",
+    "eslint": "^9.36.0",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "eslint-plugin-react-refresh": "^0.4.20",
+    "globals": "^16.4.0",
+    "sass": "^1.93.2",
+    "vite": "^7.1.7"
   }
 }
